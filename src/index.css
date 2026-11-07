@@ -103,3 +103,11 @@ form.create-card button {
   cursor: pointer;
   outline: none;
 }
+form.create-card select {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 4px;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
