@@ -31,7 +31,9 @@ function App() {
             key={index}
             id={index}
             bucket={noteItem.bucket}
-            content={noteItem.content}
+            amount={noteItem.amount}
+            name={noteItem.name}
+            currency={noteItem.currency}
             onDelete={deleteNote}
           />
         );

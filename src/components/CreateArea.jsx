@@ -2,7 +2,10 @@ import { useState } from "react";
 
 function CreateArea(props) {
   const [note, setNote] = useState({
-    content: ""
+    bucket: "",
+    name: "",
+    amount: "",
+    currency: "USD"
   });
 
   function handleChange(event) {
@@ -20,7 +23,9 @@ function CreateArea(props) {
     props.onAdd(note);
     setNote({
       bucket: "",
-      content: ""
+      amount: "",
+      name: "",
+      currency: "USD"
     });
     event.preventDefault();
 
@@ -30,16 +35,27 @@ function CreateArea(props) {
     <div>
       <form className="create-card">
         <input
-          name="bucket"
+          name="bucket" id="bucket"
           onChange={handleChange}
           placeholder="Bucket Name"
+          value={note.bucket}
         />
-        <textarea
-          name="content"
+        <input
+          name="name" id="name"
           onChange={handleChange}
-          value={note.content}
-          placeholder="Dollar amount"
+          placeholder="Your Name"
+          value={note.name}
         />
+        <input
+          name="amount" id="amount"
+          onChange={handleChange}
+          value={note.amount}
+          placeholder="Amount"
+        />
+        <select name="currency" id="currency" onChange={handleChange} value={note.currency}>
+          <option value="USD">USD</option>
+          <option value="CAD">CAD</option>
+        </select>
         <button onClick={submitNote}>Add</button>
       </form>
     </div>
