@@ -1,7 +1,7 @@
 function Header() {
   return (
     <header>
-      <h1>Budget International</h1>
+      <h1>Two Loonies</h1>
     </header>
   );
 }
