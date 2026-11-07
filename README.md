@@ -1,4 +1,4 @@
-# Two Toonies
+# budget-international
 Currency conversion and money bucketing for international partnerships
 
 ## AI statement
