@@ -35,6 +35,17 @@ footer {
 footer p {
   color: #ccc;
 }
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.welcome-element {
+  padding: 5px;
+}
 .card {
   background: #fff;
   border-radius: 7px;

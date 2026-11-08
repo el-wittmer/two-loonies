@@ -36,8 +36,6 @@ function Card(props) {
     runConversion();
   }, [props.currency, props.amount, cleanAmount]);
 
-  console.log(props);
-
   return (
     <div className="card">
       <h2>{props.bucket}</h2>
