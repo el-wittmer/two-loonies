@@ -5,7 +5,8 @@ function CreateArea(props) {
     bucket: "",
     name: "",
     amount: "",
-    currency: "USD"
+    currency: "USD",
+    additionalNotes: ""
   });
 
   function handleChange(event) {
@@ -25,7 +26,8 @@ function CreateArea(props) {
       bucket: "",
       amount: "",
       name: "",
-      currency: "USD"
+      currency: "USD",
+      additionalNotes: ""
     });
     event.preventDefault();
 
@@ -56,6 +58,12 @@ function CreateArea(props) {
           <option value="USD">USD</option>
           <option value="CAD">CAD</option>
         </select>
+        <input
+          name="additionalNotes" id="add-notes"
+          onChange={handleChange}
+          placeholder="Additional Notes"
+          value={note.additionalNotes}
+        />
         <button onClick={submitNote}>Add</button>
       </form>
     </div>
