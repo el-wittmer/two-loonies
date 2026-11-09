@@ -17,6 +17,27 @@ export default function App() {
   const [password, setPassword] = useState('')
   const [claims, setClaims] = useState(null)
 
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    if (!claims) return;
+
+    async function fetchCards() {
+      const { data, error } = await supabase
+        .from('cards')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error loading cards:', error.message);
+      } else {
+        setCards(data);
+      }
+    }
+
+    fetchCards();
+  }, [claims]);
+
   useEffect(() => {
     // Check for existing session using getClaims
     supabase.auth.getClaims().then(({ data: { claims } }) => {
@@ -55,20 +76,38 @@ export default function App() {
     setClaims(null)
   }
 
-  const [cards, setCards] = useState([]);
+  async function addCard(newCard) {
+    const { data, error } = await supabase
+      .from('cards')
+      .insert([
+        {
+          bucket: newCard.bucket,
+          amount: newCard.amount,
+          name: newCard.name,
+          currency: newCard.currency,
+          additional_notes: newCard.additionalNotes,
+        },
+      ])
+      .select();
 
-  function addCard(newCard) {
-    setCards(prevCards => {
-      return [...prevCards, newCard];
-    });
+    if (error) {
+      alert('Failed to save card: ' + error.message);
+    } else if (data && data.length > 0) {
+      setCards((prevCards) => [...prevCards, data[0]]);
+    }
   }
 
-  function deleteCard(id) {
-    setCards(prevCards => {
-      return prevCards.filter((card, index) => {
-        return index !== id;
-      });
-    });
+  async function deleteCard(id) {
+    const { error } = await supabase
+      .from('cards')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      alert('Failed to delete card: ' + error.message);
+    } else {
+      setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+    }
   }
 
   // If user is logged in, show welcome screen
@@ -81,16 +120,16 @@ export default function App() {
           <button onClick={handleLogout}>Sign Out</button>
         </div>
         <CreateArea onAdd={addCard} />
-        {cards.map((card, index) => {
+        {cards.map((card) => {
           return (
             <Card
-              key={index}
-              id={index}
+              key={card.id}
+              id={card.id}
               bucket={card.bucket}
-              amount={card.amount}
+              amount={String(card.amount ?? '')}
               name={card.name}
               currency={card.currency}
-              additionalNotes={card.additionalNotes}
+              additionalNotes={card.additional_notes}
               onDelete={deleteCard}
             />
           );
