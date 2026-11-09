@@ -14,47 +14,16 @@ const supabase = createClient(
 export default function App() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [claims, setClaims] = useState(null)
 
-  // Check URL params on initial render
-  const params = new URLSearchParams(window.location.search)
-  const hasTokenHash = params.get('token_hash')
-
-  const [verifying, setVerifying] = useState(!!hasTokenHash)
-  const [authError, setAuthError] = useState(null)
-  const [authSuccess, setAuthSuccess] = useState(false)
-
   useEffect(() => {
-    // Check if we have token_hash in URL (magic link callback)
-    const params = new URLSearchParams(window.location.search)
-    const token_hash = params.get('token_hash')
-    const type = params.get('type')
-
-    if (token_hash) {
-      // Verify the OTP token
-      supabase.auth
-        .verifyOtp({
-          token_hash,
-          type: type || 'email',
-        })
-        .then(({ error }) => {
-          if (error) {
-            setAuthError(error.message)
-          } else {
-            setAuthSuccess(true)
-            // Clear URL params
-            window.history.replaceState({}, document.title, '/')
-          }
-          setVerifying(false)
-        })
-    }
-
     // Check for existing session using getClaims
     supabase.auth.getClaims().then(({ data: { claims } }) => {
       setClaims(claims)
     })
 
-    // Listen for auth changes
+    // Listen for auth changes (triggers automatically on password login/logout)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {
@@ -69,17 +38,14 @@ export default function App() {
   const handleLogin = async (event) => {
     event.preventDefault()
     setLoading(true)
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: window.location.origin,
-        shouldCreateUser: false,
-      },
+      password,
     })
     if (error) {
       alert(error.error_description || error.message)
     } else {
-      alert('Check your email for the login link!')
+      setPassword('')
     }
     setLoading(false)
   }
@@ -89,7 +55,7 @@ export default function App() {
     setClaims(null)
   }
 
-    const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState([]);
 
   function addCard(newCard) {
     setCards(prevCards => {
@@ -103,47 +69,6 @@ export default function App() {
         return index !== id;
       });
     });
-  }
-
-  // Show verification state
-  if (verifying) {
-    return (
-      <div>
-        <h1>Authentication</h1>
-        <p>Confirming your magic link...</p>
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
-  // Show auth error
-  if (authError) {
-    return (
-      <div>
-        <h1>Authentication</h1>
-        <p>✗ Authentication failed</p>
-        <p>{authError}</p>
-        <button
-          onClick={() => {
-            setAuthError(null)
-            window.history.replaceState({}, document.title, '/')
-          }}
-        >
-          Return to login
-        </button>
-      </div>
-    )
-  }
-
-  // Show auth success (briefly before claims load)
-  if (authSuccess && !claims) {
-    return (
-      <div>
-        <h1>Authentication</h1>
-        <p>✓ Authentication successful!</p>
-        <p>Loading your account...</p>
-      </div>
-    )
   }
 
   // If user is logged in, show welcome screen
@@ -171,8 +96,8 @@ export default function App() {
           );
         })}
         <Footer />
-    </div>
-  );
+      </div>
+    );
   }
 
   // Show login form
@@ -180,7 +105,7 @@ export default function App() {
     <div>
       <Header /> 
       <div className="welcome-message">
-        <p className="welcome-element">Sign in via magic link with your email below</p>
+        <p className="welcome-element">Sign in with your email and password below</p>
         <form onSubmit={handleLogin}>
           <input
             className="welcome-element"
@@ -190,13 +115,19 @@ export default function App() {
             required={true}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <input
+            className="welcome-element"
+            type="password"
+            placeholder="Your password"
+            value={password}
+            required={true}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <button disabled={loading} className="welcome-element">
-            {loading ? <span>Loading</span> : <span>Send magic link</span>}
+            {loading ? <span>Loading</span> : <span>Sign In</span>}
           </button>
         </form>
       </div>
     </div>
   )
 }
-
-
