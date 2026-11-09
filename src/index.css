@@ -123,3 +123,31 @@ form.create-card select {
   outline: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+form.modify-card {
+  padding: 15px;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 240px;
+  margin: 16px;
+  float: left;
+}
+
+form.modify-card input,
+form.modify-card textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 4px;
+  outline: none;
+  font-size: 1.2em;
+  font-family: inherit;
+  resize: none;
+}
+form.modify-card button {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 5px;
+}

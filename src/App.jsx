@@ -97,6 +97,28 @@ export default function App() {
     }
   }
 
+  async function editCard(id, updatedCard) {
+    const { data, error } = await supabase
+      .from('cards')
+      .update({
+        bucket: updatedCard.bucket,
+        amount: updatedCard.amount,
+        name: updatedCard.name,
+        currency: updatedCard.currency,
+        additional_notes: updatedCard.additionalNotes,
+      })
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      alert('Failed to update card: ' + error.message);
+    } else if (data && data.length > 0) {
+      setCards((prevCards) =>
+        prevCards.map((card) => (card.id === id ? data[0] : card))
+      );
+    }
+  }
+
   async function deleteCard(id) {
     const { error } = await supabase
       .from('cards')
@@ -131,6 +153,7 @@ export default function App() {
               currency={card.currency}
               additionalNotes={card.additional_notes}
               onDelete={deleteCard}
+              onEdit={editCard}
             />
           );
         })}

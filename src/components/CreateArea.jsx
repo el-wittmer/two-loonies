@@ -58,7 +58,7 @@ function CreateArea(props) {
           <option value="USD">USD</option>
           <option value="CAD">CAD</option>
         </select>
-        <input
+        <textarea
           name="additionalNotes" id="add-notes"
           onChange={handleChange}
           placeholder="Additional Notes"
